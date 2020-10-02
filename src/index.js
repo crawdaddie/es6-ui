@@ -15,6 +15,13 @@ const Input = FC(({}, {listen}) => {
   `
 });
 
+
+const ListItem = FC(({text}) => {
+  return t`
+    <li>${text}</li>
+  `;
+})
+
 const App = FC((props) => {
   const addItem = () =>
     props.todos.push(Math.random().toString(36).substring(7));
@@ -41,11 +48,7 @@ const App = FC((props) => {
       onClick: () => console.log("click component button"),
     })}
     <ul>
-      ${props.todos
-        .map(function (todo) {
-          return `<li>${todo}</li>`;
-        })
-        .join("")}
+      ${props.todos.map(todo => ListItem({ text: todo }))}
     </ul>
   `;
 });
