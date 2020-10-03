@@ -1,4 +1,4 @@
-# vanilla-ui
+# ES6-ui
 
 
-simple component-based ui framework using vanilla-js
+simple component-based ui framework using ES6
