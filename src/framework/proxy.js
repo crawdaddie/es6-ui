@@ -10,13 +10,18 @@ const handler = (instance) => ({
     }
     return obj[prop];
   },
+
   set: function (obj, prop, value) {
-    console.log('set', obj, prop, value);
+    if (!obj[prop]) {
+      console.log(obj, prop, value)
+      obj[prop] = new Proxy(value, handler(instance));
+      return true;
+    }
     obj[prop] = value;
     instance.render();
-
     return true;
   },
+
   deleteProperty: function (obj, prop) {
     delete obj[prop];
     instance.render();
