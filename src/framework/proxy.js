@@ -11,7 +11,6 @@ const handler = (instance) => ({
     return obj[prop];
   },
   set: function (obj, prop, value) {
-    console.log('set', obj, prop, value);
     obj[prop] = value;
     instance.render();
 
@@ -25,5 +24,5 @@ const handler = (instance) => ({
 });
 
 export const dataProxy = (data, component) => {
-  return new Proxy(data, handler(component))
+  return new Proxy(data || {}, handler(component))
 }

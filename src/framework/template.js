@@ -24,7 +24,7 @@ const handleInterpolation = (interpolation, component) => {
 
 export const resolveTemplate = (strings, ...args) => (props, component) => {
   let template = "";
-  console.log(props, args);
+  // console.log(props, args);
   strings.forEach((fragment, i) => {
     const interpolation = args[i];
     template += fragment + handleInterpolation(interpolation, component, fragment);

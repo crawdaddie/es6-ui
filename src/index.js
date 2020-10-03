@@ -1,10 +1,13 @@
-import { FC, resolveTemplate as t, mount } from './framework';
+import { FC, resolveTemplate as t } from './framework';
 import './styles/main.css';
 
-const Button = FC(({onClick, children}, {listen}) => {
+import { p } from './preact';
+p();
+
+const Button = FC(({ onClick, text }, {listen}) => {
   listen('click', onClick);
   return t`
-    <button>${children}</button>
+    <button>${text}</button>
   `;
 });
 
@@ -15,66 +18,57 @@ const Input = FC(({}, {listen}) => {
   `
 });
 
-
-const ListItem = FC(({text}) => {
+const AddItem = FC(({}, {listen}) => {
+  const addItem = () => {
+    console.log('add item');
+  }
   return t`
-    <li>${text}</li>
+    <div>
+      ${Input()}
+      ${Button({text: 'add', onClick: addItem})}
+    </div>
+  `
+})
+
+const ListItem = FC(({text, checked}) => {
+  if (checked) {
+    text = `<del>${text}</del>`;
+  };
+  
+  return t`
+    <li>
+      <input type="checkbox"/> ${text}
+    </li>
   `;
 })
 
-const App = FC((props) => {
-  const addItem = () =>
-    props.todos.push(Math.random().toString(36).substring(7));
+const TodosList = FC(
+  ({ todos }) => t`
+    <ul>
+      ${todos.map((todo) => ListItem({ text: todo, checked: false }))}
+    </ul>
+  `
+);
+
+const App = FC(() => {
+  const heading = "My Todos";
+  const todos = ["Swim", "Climb", "Jump", "Play"];
   
-  const removeItem = (e) => {
-    console.log(e);
-    const { todos } = props;
-    props.todos = todos.slice(0, todos.length - 1)
-  };
+  const addItem = () => {};
+    // props.todos.push(Math.random().toString(36).substring(7));
+  
 
   return t`
-    <h1>${props.heading}</h1>
-    ${Input({})}
-    ${Button({
-      children: "add",
-      onClick: addItem
-    })}
-    ${Button({
-      children: "remove",
-      onClick: removeItem,
-    })}
-    ${Button({
-      children: "my button",
-      onClick: () => console.log("click component button"),
-    })}
-    <ul>
-      ${props.todos.map(todo => ListItem({ text: todo }))}
-    </ul>
+    <h1>${heading}</h1>
+    ${AddItem()}
+    ${TodosList({todos})}
   `;
 });
 
 const app = () => {
   const root = document.querySelector('#app');
-  const appComponent = App({
-    heading: "My Todos",
-    todos: ["Swim", "Climb", "Jump", "Play"],
-  });
-  mount(root, appComponent)
-  // console.log(appComponent);
+  const appComponent = App();
+  appComponent.mount(root)
 };
 
 app();
-
-
-
-// onMount((elem, props) => {
-//   const addBtn = elem.querySelector('#add-todo');
-//   addBtn.addEventListener('click', (e) => {
-//     props.todos.push(Math.random().toString(36).substring(7));
-//   });
-//   const removeBtn = elem.querySelector("#remove-todo");
-//   removeBtn.addEventListener('click', (e) => {
-//     const { todos } = props;
-//     props.todos = todos.slice(0, todos.length - 1);
-//   });
-// });

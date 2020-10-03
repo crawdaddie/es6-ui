@@ -5,7 +5,17 @@ export class Component {
   constructor(options) {
     this._data = dataProxy(options.data, this);
     this.mountListeners = [];
-    this.template = options.template;
+    this.template = options.template(
+      this.data,
+      {
+        onMount: (cb) => this.onMount(cb),
+        listen: (event, cb) => {
+          this.onMount(elem => {
+            elem.addEventListener(event, cb);
+          })
+        },
+      }
+    );
   }
 
   get data() {
@@ -29,15 +39,7 @@ export class Component {
   }
 
   render() {
-    const template = this.template(
-      this.data,
-      {
-        onMount: (cb) => this.onMount(cb),
-        listen: (event, cb) => {
-          this.elem.addEventListener(event, cb)
-        }
-      }
-    )(this.data, this);
+    const template = this.template(this.data, this);
     const templateHTML = stringToHTML(template);
     return diff(templateHTML, this.elem, this.data);
   }
