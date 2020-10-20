@@ -5,7 +5,9 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
-  entry: "./src/index.js",
+  entry: {
+    index: ['babel-polyfill', "./src/index.js"],
+  },
   output: {
     filename: "./dist/bundle.js",
   },

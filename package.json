@@ -36,10 +36,14 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "htm": "^3.0.4",
     "html-parse-stringify": "^2.0.0",
     "mathjs": "^7.3.0",
     "parse5": "^6.0.1",
+    "preact": "^10.5.3",
     "webpack-md5-hash": "0.0.6",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "xstate": "^4.13.0"
   }
 }

@@ -1,74 +1,41 @@
-import { FC, resolveTemplate as t } from './framework';
+import { h, Component, render } from 'preact';
 import './styles/main.css';
 
-import { p } from './preact';
-p();
+import { resolveTemplate as t } from './framework/template';
 
-const Button = FC(({ onClick, text }, {listen}) => {
-  listen('click', onClick);
-  return t`
-    <button>${text}</button>
-  `;
-});
-
-const Input = FC(({}, {listen}) => {
-  listen('input', e => console.log(e.target.value))
-  return t`
-    <input></input>
-  `
-});
-
-const AddItem = FC(({}, {listen}) => {
-  const addItem = () => {
-    console.log('add item');
-  }
-  return t`
-    <div>
-      ${Input()}
-      ${Button({text: 'add', onClick: addItem})}
-    </div>
-  `
-})
-
-const ListItem = FC(({text, checked}) => {
-  if (checked) {
-    text = `<del>${text}</del>`;
-  };
-  
-  return t`
-    <li>
-      <input type="checkbox"/> ${text}
-    </li>
-  `;
-})
-
-const TodosList = FC(
-  ({ todos }) => t`
-    <ul>
-      ${todos.map((todo) => ListItem({ text: todo, checked: false }))}
-    </ul>
-  `
-);
-
-const App = FC(() => {
-  const heading = "My Todos";
-  const todos = ["Swim", "Climb", "Jump", "Play"];
-  
-  const addItem = () => {};
-    // props.todos.push(Math.random().toString(36).substring(7));
-  
-
-  return t`
-    <h1>${heading}</h1>
-    ${AddItem()}
-    ${TodosList({todos})}
-  `;
-});
+import { createMachine, interpret, assign } from "xstate";
+import { TokenTypes } from './framework/template';
+class App {
+}
 
 const app = () => {
-  const root = document.querySelector('#app');
-  const appComponent = App();
-  appComponent.mount(root)
-};
+  // const root = document.querySelector('#app');
 
+  // const ht = html`<${App} page="All" />`;
+  const interp = 'A'
+
+  const tmp = t`
+    <${App} page="sdas A =" extra=${interp} func=${() => console.log('this is a func prop')}/>
+    <div class="divclass">textNode</div>
+  `;
+
+  console.log(createMachine({
+    initial: 'initial',
+    states: {
+      initial: {
+        on: {
+          [TokenTypes.TAG_START]: 'tag_assignment'
+        }
+
+      },
+      tag_assignment: {
+        on: { }
+      }
+    }
+  }))
+
+  // console.log(tmp);
+
+  // render(ht, root);
+};
 app();
