@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+// import { h, Component, render } from 'preact';
 import './styles/main.css';
 
 import { resolveTemplate as t } from './framework/template';

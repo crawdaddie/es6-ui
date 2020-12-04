@@ -259,5 +259,7 @@ export const resolveTemplate = (strings, ...args) => {
     previousToken = token;
     console.log(currentNode);
   }
+  
+  return tree;
 
 }
