@@ -6,12 +6,14 @@ describe('template resolver', () => {
  
     const interp = 'A';
 
-    const App = FC(() => '');
+    const App = FC((page, extra, func) => {
+      return t``
+    });
 
 
     const node = t`
       <${App} page="page name" extra=${interp} func=${() => console.log('this is a func prop')}/>
-      <div class="divclass">textNode</div>
+      <div class="divclass">text</div>
     `;
     expect(node).toEqual(
       [
@@ -23,12 +25,13 @@ describe('template resolver', () => {
           },
           children: []
         },
+
         {
           props: {
             class: "divClass"
-          },
+          },          
           children: [
-            "textNode"
+            "text"
           ]
         }
       ]
