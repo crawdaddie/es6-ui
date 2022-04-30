@@ -3,7 +3,7 @@ import { FC } from '.';
 
 describe('template resolver', () => {
   it('resolves template string to a node', () => {
- 
+
     const interp = 'A';
 
     const App = FC((page, extra, func) => {
@@ -17,29 +17,34 @@ describe('template resolver', () => {
     const functionRef = () => console.log('this is a func prop');
     const node = t`
       <${App} page="page name" extra=${interp} func=${functionRef}>
-        <${Component} prop1="prop" />
+        <${Component} prop1="prop val" />
       </${App}>
       <div class="divclass">text</div>
     `;
 
-    console.log(node);
     expect(node).toEqual(
       [
         {
-          type: "component",
           constructor: App,
           props: {
             page: "page name",
             extra: "A",
-            func: functionRef, 
+            func: functionRef,
           },
+          children: [
+            {
+              constructor: Component,
+              props: {
+                prop1: "prop"
+              }
+            }
+          ]
         },
-
         {
-          type: "div",
+          constructor: 'div',
           props: {
             class: "divclass"
-          },          
+          },
           children: [
             "text"
           ]
