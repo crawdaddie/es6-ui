@@ -8,10 +8,12 @@ const mergeStringsWithArgs = (strings, interpolationObjects) => {
   for (let i = 0; i < strings.length; i++) {
     template += strings[i].replace('\n', '');
     if (interpolationObjects[i]) {
-      template += `object-${i}`
+      template += `object-${i} `
     }
   }
-  return { tokens: [...Tokenizer.tokenize(template)], objectContext }
+
+  const tokens = [...Tokenizer.tokenize(template)];
+  return { tokens, objectContext }
 };
 
 
@@ -31,7 +33,10 @@ const isEmptyToken = ({ type, text }) => {
 
 export const resolveTemplate = (strings, ...args) => {
   const { tokens, objectContext } = mergeStringsWithArgs(strings, args);
-  let stack = [];
+  let stack = [{
+    constructor: 'empty-tag',
+    children: []
+  }];
 
   let tree = [];
   let currentNode = { props: {} };
@@ -39,13 +44,13 @@ export const resolveTemplate = (strings, ...args) => {
   while (i < tokens.length) {
     let token = tokens[i]
     if (token.type === 'opening-tag') {
-      const constructor = objectContext[token.name] || token.name;
+      const constructor = objectContext[token.name.trim()] || token.name;
       stack.push({ constructor })
     }
 
     if (token.type === 'attribute') {
       const props = stack[stack.length - 1].props || {};
-      const val = objectContext[token.value] || token.value
+      const val = objectContext[token.value.trim()] || token.value
       stack[stack.length - 1].props = { ...props, [token.name]: val }
     }
     if (token.type === 'opening-tag-end') {
@@ -55,8 +60,14 @@ export const resolveTemplate = (strings, ...args) => {
         stack[stack.length - 1].children = [...parent.children || [], childItem]
       }
     }
+
+    if (token.type === 'closing-tag') {
+      const childItem = stack.pop()
+      const parent = stack[stack.length - 1]
+      stack[stack.length - 1].children = [...parent.children || [], childItem]
+    }
     if (token.type === 'text') {
-      const childItem = token.text;
+      const childItem = objectContext[token.text.trim()] || token.text;
       const parent = stack[stack.length - 1]
       if (parent && childItem.trim() !== '') {
         stack[stack.length - 1].children = [...parent?.children || [], childItem]
@@ -65,6 +76,7 @@ export const resolveTemplate = (strings, ...args) => {
     }
     i++
   }
+  console.log(stack[0].children)
 
-  return stack;
+  return stack[0].children;
 }

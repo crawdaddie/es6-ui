@@ -10,9 +10,9 @@ export const stringToHTML = (str) => {
  * @return {String}      The type
  */
 const getNodeType = (node) => {
-	if (node.nodeType === 3) return 'text';
+  if (node.nodeType === 3) return 'text';
   if (node.nodeType === 8) return 'comment';
-	return node.tagName.toLowerCase();
+  return node.tagName.toLowerCase();
 };
 
 const isSlotNode = (node) => getNodeType(node) === 'slot';
@@ -24,8 +24,8 @@ const areSlotNodes = (domNode, node) => isSlotNode(domNode) && isSlotNode(node);
  * @return {String}      The type
  */
 const getNodeContent = (node) => {
-	if (node.childNodes && node.childNodes.length > 0) return null;
-	return node.textContent;
+  if (node.childNodes && node.childNodes.length > 0) return null;
+  return node.textContent;
 };
 
 /**
@@ -36,7 +36,7 @@ const getNodeContent = (node) => {
 export const diff = (template, elem, props) => {
   const domNodes = elem.childNodes;
   const templateNodes = template.childNodes;
-  
+
   // If extra elements in DOM, remove them
   let count = domNodes.length - templateNodes.length;
   if (count > 0) {
@@ -72,7 +72,7 @@ export const diff = (template, elem, props) => {
     }
 
     if (areSlotNodes(domNode, node)) {
-      
+
     }
 
     if (domNode.childNodes.length < 1 && node.childNodes.length > 0) {

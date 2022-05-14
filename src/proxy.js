@@ -4,19 +4,19 @@ const isObjectOrArray = (obj) => {
 };
 
 const handler = (instance) => ({
-  get: function (obj, prop) {
+  get: function(obj, prop) {
     if (isObjectOrArray(obj[prop])) {
       return new Proxy(obj[prop], handler(instance));
     }
     return obj[prop];
   },
-  set: function (obj, prop, value) {
+  set: function(obj, prop, value) {
     obj[prop] = value;
     instance.render();
 
     return true;
   },
-  deleteProperty: function (obj, prop) {
+  deleteProperty: function(obj, prop) {
     delete obj[prop];
     instance.render();
     return true;

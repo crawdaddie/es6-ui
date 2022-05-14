@@ -1,5 +1,5 @@
-import { FC, resolveTemplate as t } from './framework';
-import './styles/main.css';
+import { FC } from '../../src/component';
+import { resolveTemplate as t } from '../../src/template'
 
 
 const Button = FC(({ onClick, text }, { listen }) => {
@@ -43,7 +43,7 @@ const ListItem = FC(({ text, checked }) => {
 const TodosList = FC(
   ({ todos }) => t`
     <ul>
-      ${todos.map((todo) => ListItem({ text: todo, checked: false }))}
+      ${todos.map((todo) => t`<li>${todo}</li>`)}
     </ul>
   `
 );
@@ -53,20 +53,11 @@ const App = FC(() => {
   const todos = ["Swim", "Climb", "Jump", "Play"];
 
   const addItem = () => { };
-  // props.todos.push(Math.random().toString(36).substring(7));
 
 
   return t`
     <h1>${heading}</h1>
-    ${AddItem()}
-    ${TodosList({ todos })}
+    <${TodosList} todos=${todos}/>
   `;
 });
-
-const app = () => {
-  const root = document.querySelector('#app');
-  const appComponent = App();
-  appComponent.mount(root)
-};
-
-app();
+export default App

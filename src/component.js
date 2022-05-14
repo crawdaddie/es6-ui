@@ -3,8 +3,10 @@ import { dataProxy } from './proxy';
 
 export class Component {
   constructor(options) {
+    console.log('constructor', options)
     this._data = dataProxy(options.data, this);
     this.mountListeners = [];
+    this.templateFunc = options.template;
     this.template = options.template(
       this.data,
       {
@@ -29,9 +31,11 @@ export class Component {
 
   mount(elem) {
     this.elem = elem;
-    const render = this.render();
-    this.mountListeners.forEach(cb => cb(elem, this.data));
-    return render;
+    const tree = this.templateFunc()
+    console.log({ tree })
+    tree.forEach(({ constructor, props }) => {
+      typeof constructor !== 'string' ? constructor(props) : null;
+    })
   }
 
   onMount(cb) {
@@ -39,9 +43,15 @@ export class Component {
   }
 
   render() {
-    const template = this.template(this.data, this);
-    const templateHTML = stringToHTML(template);
-    return diff(templateHTML, this.elem, this.data);
+    // console.log(this.data, this.templateFunc)
+    // this.elem.append(document.createElement(this.templateFunc[0].constructor).append())
+    // console.log(this.templateFunc, this.elem)
+    // return this.templateFunc
+
+
+    // const template = this.template(this.data, this);
+    // const templateHTML = stringToHTML(template);
+    // return diff(templateHTML, this.elem, this.data);
   }
 }
 
