@@ -35,18 +35,19 @@
     "jest": "^26.6.3",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
+    "regenerator-runtime": "^0.13.7",
     "reload": "^2.4.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "terser": "^3.14.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14",
-    "regenerator-runtime": "^0.13.7"
+    "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
     "htm": "^3.0.4",
     "html-parse-stringify": "^2.0.0",
+    "html-tokenizer": "^4.0.1",
     "mathjs": "^7.3.0",
     "parse5": "^6.0.1",
     "preact": "^10.5.3",

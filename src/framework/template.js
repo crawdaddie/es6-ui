@@ -1,24 +1,17 @@
-const mergeStringsWithArgs = (strings, interpolationArgs) => {
-  let arr = [];
+import { Tokenizer } from 'html-tokenizer'
 
+const mergeStringsWithArgs = (strings, interpolationObjects) => {
+  let template = ''
+  const objectContext = interpolationObjects.reduce((objs, obj, i) => {
+    return { ...objs, [`object-${i}`]: obj }
+  }, {})
   for (let i = 0; i < strings.length; i++) {
-    const fragment = (
-      strings[i].replace('\n', '')
-        .split(/(\/>)|(<\/)|(<)|(>)/)
-        .flatMap(f => f?.trim().split(/\s(?=(?:[^'"`]*(['"`]).*?\1)*[^'"`]*$)/))
-        .flatMap(f => f?.split(/=(?=(?:[^'"`]*(['"`]).*?\1)*[^'"`]*$)/))
-        .map(f => f?.replace(/(^"|"$)/g, ''))
-        .filter(f => f && f.trim() !== '')
-    );
-    console.log(arr, fragment)
-
-    arr.push(fragment);
-
-    if (interpolationArgs[i]) {
-      arr.push(interpolationArgs[i])
+    template += strings[i].replace('\n', '');
+    if (interpolationObjects[i]) {
+      template += `object-${i}`
     }
-  };
-  return arr.flat();
+  }
+  return { tokens: [...Tokenizer.tokenize(template)], objectContext }
 };
 
 
@@ -32,51 +25,46 @@ const getAttrs = (tokens, i) => {
   return [attrs, i + endIndex]
 };
 
+const isEmptyToken = ({ type, text }) => {
+  return type === 'text' && text.replace('\n', '').trim() !== ''
+}
+
 export const resolveTemplate = (strings, ...args) => {
-  const merged = mergeStringsWithArgs(strings, args);
-  // console.log(merged)
+  const { tokens, objectContext } = mergeStringsWithArgs(strings, args);
   let stack = [];
 
   let tree = [];
   let currentNode = { props: {} };
   let i = 0;
-  while (i < merged.length) {
-    const token = merged[i];
-    if (typeof token === 'string' && token === '<') {
-
-      i++;
-      const constructor = merged[i];
-
-      i++;
-      const [attrs, j] = getAttrs(merged, i)
-      i = j - 1
-
-      let props = {}
-
-      for (const k in attrs) {
-        if (k % 2 !== 0) {
-          const propName = attrs[k - 1];
-          props[propName] = attrs[k]
-        }
-      }
-      stack.push({
-        constructor,
-        props
-      })
-
-    } else if (token === '>') {
-      // add to stack
-    } else if (token === '/>') {
-      const last = stack.pop();
-      const parent = stack[stack.length - 1]
-      stack[stack.length - 1].children = [...parent.children, last]
-      console.log(token, stack)
+  while (i < tokens.length) {
+    let token = tokens[i]
+    if (token.type === 'opening-tag') {
+      const constructor = objectContext[token.name] || token.name;
+      stack.push({ constructor })
     }
-    i++;
+
+    if (token.type === 'attribute') {
+      const props = stack[stack.length - 1].props || {};
+      const val = objectContext[token.value] || token.value
+      stack[stack.length - 1].props = { ...props, [token.name]: val }
+    }
+    if (token.type === 'opening-tag-end') {
+      if (token.token === '/>') {
+        const childItem = stack.pop()
+        const parent = stack[stack.length - 1]
+        stack[stack.length - 1].children = [...parent.children || [], childItem]
+      }
+    }
+    if (token.type === 'text') {
+      const childItem = token.text;
+      const parent = stack[stack.length - 1]
+      if (parent && childItem.trim() !== '') {
+        stack[stack.length - 1].children = [...parent?.children || [], childItem]
+      }
+
+    }
+    i++
   }
 
-  console.log(stack)
-
-
-  return tree;
+  return stack;
 }

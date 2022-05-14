@@ -4731,6 +4731,11 @@ html-parse-stringify@^2.0.0:
   dependencies:
     void-elements "3.1.0"
 
+html-tokenizer@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/html-tokenizer/-/html-tokenizer-4.0.1.tgz#69adba24e4c99e620fc2cee51f28e72bc7bb9906"
+  integrity sha512-rxTPKPl0iDjB2GSlcfRKrN+7zBmwKDpKgV1BPOPmoj/K9lefbixD5Wl75Jvh4jD+U5dj1Tni155nh7881q+Suw==
+
 html-webpack-plugin@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-3.2.0.tgz#b01abbd723acaaa7b37b6af4492ebda03d9dd37b"

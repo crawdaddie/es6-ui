@@ -35,7 +35,7 @@ describe('template resolver', () => {
             {
               constructor: Component,
               props: {
-                prop1: "prop"
+                prop1: "prop val"
               }
             }
           ]
